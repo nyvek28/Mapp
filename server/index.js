@@ -14,13 +14,18 @@ app.get('/api', function(req, res){
   res.status(200).send('Hello World!');
 });
 
-io.on('connection', function(socket){
+io.sockets.on('connection', function(socket){
   connections.push(socket);
   console.log('Current sockets: ' + connections.length);
 
   socket.on('disconnect', function(){
     connections.splice(connections.indexOf(socket), 1);
     console.log('Current sockets: ' + connections.length);
+  });
+
+  socket.on('send', function(data){
+    //console.log(data);
+    io.sockets.emit('new msg', {msg: data.msg});
   });
 
 });
